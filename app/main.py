@@ -13,8 +13,6 @@ from pydantic import ValidationError as PydanticValidationError
 from app.tasks_threaded import process_transaction_async
 from app.utils import get_ist_now, get_ist_now_naive  
 
-Base.metadata.create_all(bind=engine)
-
 app = Flask(__name__)
 
 CORS(app)
