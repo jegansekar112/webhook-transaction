@@ -1,0 +1,35 @@
+# Render Blueprint - Deploy everything from GitHub with one click
+
+services:
+  # Backend API Service
+  - type: web
+    name: webhook-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app.main:app --bind 0.0.0.0:$PORT --workers 4
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: webhook-db
+          property: connectionString
+
+  # Frontend Static Site
+  - type: web
+    name: webhook-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
+    envVars:
+      # Add these in Render dashboard after deployment:
+      # REACT_APP_SUPABASE_URL
+      # REACT_APP_SUPABASE_ANON_KEY
+      # REACT_APP_API_URL (your backend URL)
+
+databases:
+  # PostgreSQL Database
+  - name: webhook-db
+    databaseName: webhook_db
+    user: webhook_user
+    plan: free
